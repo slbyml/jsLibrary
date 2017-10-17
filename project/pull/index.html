@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<style>
+	/*移动端*/
+	html{
+	    -webkit-text-size-adjust:none;
+	    -webkit-user-select:none;
+	    -webkit-touch-callout: none
+	    font-family: Helvetica;
+	    width: 100%;height: 100%;
+	}
+	body,h1,h2,h3,h4,h5,h6,p,dl,dd,ul,ol,pre,form,input,textarea,th,td,select{margin:0; padding:0; font-weight: normal;text-indent: 0;}
+	a,button,input,textarea,select{ background: none; -webkit-tap-highlight-color:rgba(255,0,0,0); outline:none; -webkit-appearance:none;}
+	em{font-style:normal}
+	li{list-style:none}
+	a{text-decoration:none;}
+	img{border:none; vertical-align:top;}
+	table{border-collapse:collapse;}
+	textarea{ resize:none; overflow:auto;}
+	*{
+	    box-sizing: border-box;
+	}
+	body{overflow:hidden;width: 100%;height: 100%}	
+	button{border: 1px solid #ccc;border-radius: 4px;width: 100%;height:1rem;}
+	input{width: 100%;height:40px;border: 1px solid #666;border-radius: 4px;padding: 0 10px;margin-bottom: 10px}
+	.pageBox{position: absolute;left: 0;top: 0;width: 100%;height: 100%;background-color: #fff;transform:translateY(100%);z-index: 2;box-shadow: 0 0 3px #999}
+	.active{transform:translateY(0);z-index: 1;}
+	.down{position: absolute;left: 0;bottom:20px}
+	#pullPage{position: absolute;left: 0;top: 0;bottom: 0;right: 0;overflow: hidden;}
+</style>
+<script src="https://apps.bdimg.com/libs/zepto/1.1.4/zepto.min.js"></script>
+<script>
+	(function (doc, win) {
+		var docEl = doc.documentElement,
+		resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+		recalc = function () {
+		   var clientWidth = docEl.clientWidth;
+		   if (!clientWidth) return;
+			docEl.style.fontSize =clientWidth /7.5 + 'px';
+		};
+		if (!doc.addEventListener) return;
+		win.addEventListener(resizeEvt, recalc, false);
+		doc.addEventListener('DOMContentLoaded', recalc, false);
+	})(document, window);
+</script>
+</head>
+<body>
+	<div id='pullPage'>
+		<!-- page1 -->
+		<div class="pageBox active" id="page1">
+			11111111111 11111111
+			<button class='gotoend'>跳转到第五页</button>
+			<input type="text">
+			<input type="text">
+			<input type="text">
+			<button class='down'>下一页</button>
+		</div>
+		<!-- page2 -->
+		<div class="pageBox" id="page2">
+			222222222 222222222
+			<button class='down'>下一页</button>
+		</div>
+		<!-- page3 -->
+		<div class="pageBox" id="page3">
+			33333333 333333333
+			<button class='down'>33333</button>
+			<button class='goto'>跳转到第一页</button>
+		</div>
+		<!-- page4 -->
+		<div class="pageBox" id="page4">
+			444444444 444444
+			<button class='down'>下一页</button>
+			<button class='goto'>跳转到第一页</button>
+		</div>
+		<!-- page5 -->
+		<div class="pageBox" id="page5">
+			55555
+			<button class='goto'>跳转到第一页</button>
+		</div>
+	</div>
+</body>
+<script src="index.js"></script>
+<script>
+var pull=new pullPage();
+pull.init();
+$(function(){
+	$(".goto").on('click',function(){
+		pull.goPage(1)
+	})	
+	$(".gotoend").on('click',function(){
+		pull.goPage(5)
+	})	
+})
+</script>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>placeholder</title>
+<style>
+*{padding:0; margin:0; list-style:none}
+#place{margin:100px;position: relative;font-size: 16px;}
+input{width:300px;height: 40px;line-height: 40px;border: 1px solid #999;padding: 0 10px}
+#placespan{position: absolute; left: 10px;top: 0px;height: 40px;line-height: 40px;display: block;color: #c1c1c1;}
+</style>
+
+</head>
+<div id="place">
+	<input value="" type="text"  id="placeinput" placeholder="请输入邮箱">
+</div>
+
+<body>
+<script type="text/javascript">
+	var odiv=document.getElementById('place');
+	var oinput=document.getElementById('placeinput');
+	if(navigator.userAgent.indexOf("MSIE 9.0")>=0 || navigator.userAgent.indexOf("MSIE 8.0")>=0){
+		var span=document.createElement("span");
+		span.id='placespan';
+		span.innerHTML='请输入邮箱'
+		odiv.appendChild(span);
+		var ospan=document.getElementById('placespan');
+		ospan.onclick=function(){
+			oinput.focus()
+		};
+		oinput.onkeyup=function(){
+			var val=this.value.replace(/^\s+|\s+$/g,'');
+			if(val===''){
+				this.value='';
+				ospan.style.display='block'
+			}else{
+				ospan.style.display='none'
+			}
+		}
+
+	}
+</script>
+</body>
+</html>

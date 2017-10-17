@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="renderer" content="webkit">
+<meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport">
+<title>flex</title>
+<style>
+	*{padding: 0;margin: 0}
+	body,html{width: 100%;height: 100%;}
+	li{list-style: none;}
+	.box{display: -webkit-box;display: -webkit-flex;display: flex;display: -moz-box;width:100%;display: -moz-box;display: -ms-flexbox}
+	#line{height: 20px;}
+	body{
+		display: -webkit-box;display: -webkit-flex;display: flex;
+		-webkit-box-orient:vertical;
+	-webkit-box-direction: normal;-webkit-flex-direction: column; flex-direction: column;
+	}
+	#body{-webkit-box-flex: 1; -webkit-flex: 1; flex: 1;
+		overflow: scroll;-webkit-overflow-scrolling : touch;}
+</style>
+</head>
+
+<body>
+<!-- https://isux.tencent.com/flexbox.html -->
+<!-- //////////////////////head////////////////////////-->
+<style>
+#head{height: 40px;text-align: center;border-bottom: 1px solid #ddd;line-height: 40px;}
+</style>
+<div id="head">head</div>
+<!-- //////////////////////body////////////////////// -->
+<div id="body">
+	<style>
+	.dom1 .left{width: 50px;height: 50px;background-color:#31BBEE}
+	.dom1 .right{width: 10px;height: 10px;background-color:#31BBEE;flex:none;}/* 子元素默认是可以伸缩的，需要写flex:none来禁止伸缩; */
+	.dom1 .center{-webkit-box-flex:1;-webkit-flex:1;flex:1;width: 0%;padding: 0 10px;-webkit-line-clamp:2;overflow: hidden;display: -webkit-box;-webkit-box-orient: vertical;}
+	.dom1.flex-simple{ -webkit-align-items: center;align-items: center;/* -webkit-box-align: center; */}
+	</style>
+	<div class="box dom1 flex-simple">
+		<div class="left"></div>
+		<div class="center">当我们在页面中填写个人资料中的省市信息时，页面会根据当前用户所在的城市自动选中省市下拉选项；当我们访问某个大型站点时，网站程序会自动进入到用户当前所在的城市频道。这些功能是如何实现的呢？今天我们来通过实例讲解如何根据IP定位用户所在城市信息。根据当前用户本地IP地址，查询IP地址库，获取IP所在的省市信息，目前有多种方式实现该功能</div>
+		<div class="right"></div>
+	</div>
+	<div id="line"></div>
+	<div class="box dom1 flex-simple">
+		<div class="left"></div>
+		<a class="center" href='http://115.159.36.96/tikizheng/flextest/demo.html'>这是一个demo链接</a>
+		<div class="right"></div>
+	</div>
+</div>
+<!-- //////////////////////footer////////////////////// -->
+<style>
+#footer{line-height: 40px; }
+#footer ul{display: -webkit-box;display: -webkit-flex;display: flex;width: 100%;background-color: #fff;}
+#footer li{
+	-webkit-box-flex:1;-webkit-flex:1;flex:1;
+	box-sizing: border-box;-webkit-box-sizing: border-box;	
+	width: 0%;border:1px solid #ddd;border-left: none;height:40px;text-align: center;
+}
+</style>
+<div id="footer">
+	<ul>
+		<li>1111</li>
+		<li>2222</li>
+		<li>3333</li>
+		<li>4444</li>
+	</ul>
+</div>
+</body>
+</html>
