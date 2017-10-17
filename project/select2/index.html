@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Document</title>
+   <link href="css/index.css" rel="stylesheet" type="text/css" />
+   <style>
+    #selectBox{padding: 20px;}
+   </style>
+</head>
+<body>
+<div id="selectBox"></div>
+<div id="selectBox2"></div>
+</body>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="dist/js/selectPick.min.js"></script>
+<script>
+var bank1=[{number: "105405000015", bankBranchName: "中国建设银行股份有限公司龙岩分行（不对外）", bankname: "中国建设银行", type: "bankBranchName"},
+{number: "105405000058", bankBranchName: "中国建设银行股份有限公司龙岩市交易城分理处", bankname: "中国建设银行", type: "bankBranchName"},
+{number: "105405000082", bankBranchName: "中国建设银行股份有限公司龙岩市龙建分理处", bankname: "中国建设银行", type: "bankBranchName"},
+{number: "105405000082", bankBranchName: "中国建设银行股份有限公司龙岩市龙建分理处", bankname: "中国建设银行", type: "bankBranchName"},
+{number: "105405300243", bankBranchName: "中国建设银行股份有限公司永定支行", bankname: "中国建设银行", type: "bankBranchName"}]
+var initBankName=function(container){
+    var bank=new selectPick({
+        container:container,
+        search:true,
+        placeholder:"请选择支行名称",
+        key:"bankBranchName"
+    })
+    bank.init()
+    return bank
+}
+var s=initBankName("#selectBox")
+s.setData(bank1)
+var sa=initBankName("#selectBox2")
+sa.setData([])
+</script>
+</html>
