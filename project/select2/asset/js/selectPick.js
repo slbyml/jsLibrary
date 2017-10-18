@@ -7,6 +7,7 @@ listLength:一屏显示几个list
 listHeight:每个list的高度
 placeholder:提示
 value:输入框初始值
+noData:没有数据时得显示
 */
 ;(function($, w, document,undefined){
 	//页面大小改变时时更改下拉框得大小和为止
@@ -27,26 +28,28 @@ value:输入框初始值
 		self.node.drop.hide();	
 		self.node.mask.hide()
 
-		//防止混乱，每次隐藏下拉时，都注销公用部分事件
+		//防止混乱和多次绑定事件，每次隐藏下拉时，都注销公用部分事件
 		self.node.lists.off("click mouseenter")		
 		self.node.mask.off("click")
 
 		$(window).off("resize",resizeWindow(self))	
 	}
+	/*默认值*/
+	const defaults={
+		container:"body",
+		search:false,
+		data:[],
+		key:null,
+		value:"",
+		listLength:4,
+		listHeight:32,
+		placeholder:"请输入",
+		callback:null,
+		noData:"没有数据"		
+	}
 	class selectPick{
 		constructor(opt){
-			this.defaults={
-				container:"body",
-				search:false,
-				data:[],
-				key:null,
-				value:"",
-				listLength:4,
-				listHeight:32,
-				placeholder:"请输入",
-				callback:null
-			}
-			this.o=$.extend(true, this.defaults, opt||{})
+			this.o=$.extend(true,{},defaults, opt||{})
 			this.dom=$(this.o.container);
 			this.data={  //存放插件里面得状态和数据
 				listLength:0,		//是否有数据
@@ -110,6 +113,7 @@ value:输入框初始值
 							id:i,
 							text:item
 						}
+						this.data.tabIndex=i
 					}else{
 						html+=`<li data-id="${i}">${item}</li>`
 					}				
@@ -127,6 +131,8 @@ value:输入框初始值
 			this.o.data=data;
 			if(this.o.value === ""){
 				this.node.input.val("");			
+			}else{
+				this.node.input.val(this.o.value)
 			}
 			this.data={
 				show:false,
@@ -138,6 +144,7 @@ value:输入框初始值
 			this.data.show=false;
 			this.node.drop.hide();	
 			this.node.mask.hide()
+			return this
 		}
 		getValue(){
 			return {
@@ -180,7 +187,7 @@ value:输入框初始值
 				const ev=window.event|| e
 				const flag=this.renderList(this.o.value)
 				if(!flag){		//没有数据
-					self.node.lists.html(`<li data-disabled="true">没有数据</li>`)
+					self.node.lists.html(`<li data-disabled="true">${this.o.noData}</li>`)
 				}
 				this.setPosition()
 				this.node.mask.show()
@@ -220,7 +227,7 @@ value:输入框初始值
 					if(this.data.nowNode.text !== ""){		//如果没有选择，则再关闭时回复输入框默认的值
 						$input.val(this.data.nowNode.text)
 					}else{
-						$input.val("")
+						$input.val(this.o.value)
 					}		
 					listHide(this)
 				}
@@ -272,7 +279,7 @@ value:输入框初始值
 			const self=this;
 			this.node.input.on("input propertychange",function(){
 				if(self.data.listLength<=0){ //没有数据还搜索
-					self.node.lists.html(`<li data-disabled="true">没有数据</li>`)
+					self.node.lists.html(`<li data-disabled="true">${this.o.noData}</li>`)
 					return false
 				}
 				const val=$.trim(this.value);
