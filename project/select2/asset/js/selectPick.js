@@ -146,11 +146,26 @@ noData:没有数据时得显示
 			this.node.mask.hide()
 			return this
 		}
-		getValue(){
+		getValue(){			//获取已经选中得项得数据
 			return {
 				data:this.data.nowNode.id<0?-1:this.o.data[this.data.nowNode.id],
 				value:this.data.nowNode.text
-			}				//获取已经选中得项得数据
+			}				
+		}
+		setDefaultVal(val=""){		//设置默认值，为异步设置默认值用得
+			this.o.value=val
+			this.node.input.val(val)
+			let item="";
+			for(let i=0,l=this.o.data.length;i<l;i++){
+				item=this.o.key?this.o.data[i][this.o.key]:this.o.data[i];
+				if(item===val){					
+					this.data.nowNode={
+						id:i,
+						text:item
+					}
+					return false
+				}
+			}
 		}
 		gotoActive(){			//设置已经选中项在页面可视区域
 			if(this.data.nowNode.id === -1){		//如果没有选中项，
