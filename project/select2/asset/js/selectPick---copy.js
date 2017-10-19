@@ -25,12 +25,12 @@ noData:没有数据时得显示
 	//隐藏下拉框
 	const listHide=(self)=>{			
 		self.data.show=false;		
-		node.drop.hide();	
-		node.mask.hide()
+		self.node.drop.hide();	
+		self.node.mask.hide()
 
 		//防止混乱和多次绑定事件，每次隐藏下拉时，都注销公用部分事件
-		node.lists.off("click mouseenter")		
-		node.mask.off("click")
+		self.node.lists.off("click mouseenter")		
+		self.node.mask.off("click")
 
 		$(window).off("resize",resizeWindow(self))	
 		$(window).off("scroll",self.setPosition())
@@ -48,10 +48,10 @@ noData:没有数据时得显示
 		callback:null,
 		noData:"没有数据"		
 	}
-	let node={} //存放插件得dom		
 	class selectPick{
 		constructor(opt){
 			this.o=$.extend(true,{},defaults, opt||{})
+			this.dom=$(this.o.container);
 			this.data={  //存放插件里面得状态和数据
 				listLength:0,		//是否有数据
 				searchLength:0,		//搜索结果的个数
@@ -62,8 +62,8 @@ noData:没有数据时得显示
 					id:-1,
 					text:""
 				}
-			}	
-			this.child={}  //存放container下得元素
+			}
+			this.node={}		//存放插件得dom		
 		}
 		init(){
 			this.renderHTML()
@@ -73,30 +73,30 @@ noData:没有数据时得显示
 			}
 		}
 		renderHTML(){		//渲染页面
-			this.child.select=$(` <div class="selectPick" ><input type="text" placeholder="${this.o.placeholder}" value="${this.o.value}"></div>`);
+			this.node.select=$(` <div class="selectPick" ><input type="text" placeholder="${this.o.placeholder}" value="${this.o.value}"></div>`);
 			//公共背景
 			const mask=document.getElementById("selectMask");
 			if(!mask){ 
-				node.mask=$("<div id='selectMask'></div>")
-				$("body").append(node.mask)
+				this.node.mask=$("<div id='selectMask'></div>")
+				$("body").append(this.node.mask)
 			}else{
-				node.mask=$(mask)
+				this.node.mask=$(mask)
 			}
 			//公共列表
 			const drop=document.getElementById("selectDrop");
 			if(!drop){		
-				node.drop=$(`<div id="selectDrop" style="max-height:${this.o.listLength*this.o.listHeight}px"><ul></ul></div>`)
-				$("body").append(node.drop)
+				this.node.drop=$(`<div id="selectDrop" style="max-height:${this.o.listLength*this.o.listHeight}px"><ul></ul></div>`)
+				$("body").append(this.node.drop)
 			}else{
-				node.drop=$(drop)
+				this.node.drop=$(drop)
 			}
 
-			$(this.o.container).html(this.child.select);
-			this.child.input=this.child.select.find("input");
-			node.lists=node.drop.find("ul");
+			this.dom.html(this.node.select);
+			this.node.input=this.node.select.find("input");
+			this.node.lists=this.node.drop.find("ul");
 			if(!this.o.search){		//如果没有模糊搜索，则禁用输入框
-				this.child.input.attr("disabled","disabled")
-				this.child.select.append(`<div class="inputDisabled"></div>`)
+				this.node.input.attr("disabled","disabled")
+				this.node.select.append(`<div class="inputDisabled"></div>`)
 			}		
 		}
 		renderList(text="",searchFlag=false){		//渲染list;text：默认选择和此值匹配得项，searchFlag:区分当前是否是在模糊搜索
@@ -124,16 +124,16 @@ noData:没有数据时得显示
 				++this.data.searchLength
 			}
 			if(this.o.search && html==="") return false;  //搜索时没有匹配到
-			node.lists.html(html)
-			node.items=node.lists.find("li");		//选择已经渲染到页面得数据node
+			this.node.lists.html(html)
+			this.node.items=this.node.lists.find("li");		//选择已经渲染到页面得数据node
 			return true
 		}
 		setData(data=[]){			//设置下拉列表得数据
 			this.o.data=data;
 			if(this.o.value === ""){
-				this.child.input.val("");			
+				this.node.input.val("");			
 			}else{
-				this.child.input.val(this.o.value)
+				this.node.input.val(this.o.value)
 			}
 			this.data={
 				show:false,
@@ -143,8 +143,8 @@ noData:没有数据时得显示
 				}
 			}
 			this.data.show=false;
-			node.drop.hide();	
-			node.mask.hide()
+			this.node.drop.hide();	
+			this.node.mask.hide()
 			return this
 		}
 		getValue(){			//获取已经选中得项得数据
@@ -155,7 +155,7 @@ noData:没有数据时得显示
 		}
 		setDefaultVal(val=""){		//设置默认值，为异步设置默认值用得
 			this.o.value=val
-			this.child.input.val(val)
+			this.node.input.val(val)
 			let item="";
 			for(let i=0,l=this.o.data.length;i<l;i++){
 				item=this.o.key?this.o.data[i][this.o.key]:this.o.data[i];
@@ -170,21 +170,21 @@ noData:没有数据时得显示
 		}
 		gotoActive(){			//设置已经选中项在页面可视区域
 			if(this.data.nowNode.id === -1){		//如果没有选中项，
-				node.drop.scrollTop(0)
+				this.node.drop.scrollTop(0)
 				return false
 			}
-			const $active=node.items.eq(this.data.nowNode.id),
-				  currentOffset=node.drop.offset().top + node.drop.outerHeight(false),
+			const $active=this.node.items.eq(this.data.nowNode.id),
+				  currentOffset=this.node.drop.offset().top + this.node.drop.outerHeight(false),
 				  activeBottom = $active.offset().top + $active.outerHeight(false),
-				  activeOffset = node.drop.scrollTop() + activeBottom - currentOffset;
-			node.drop.scrollTop(activeOffset)
+				  activeOffset = this.node.drop.scrollTop() + activeBottom - currentOffset;
+			this.node.drop.scrollTop(activeOffset)
 		}
 		setPosition(){		//设置下拉框得位置和大小
-			const currentOffset=this.child.select.offset(),
-			      currentTop=currentOffset.top+this.child.select.outerHeight(false),
-			      currentWidth=this.child.select.outerWidth(),
+			const currentOffset=this.node.select.offset(),
+			      currentTop=currentOffset.top+this.node.select.outerHeight(false),
+			      currentWidth=this.node.select.outerWidth(),
 			      currentLeft=currentOffset.left;
-			node.drop.css({
+			this.node.drop.css({
 				left:currentLeft,
 				top:currentTop,
 				width:currentWidth-2
@@ -194,20 +194,20 @@ noData:没有数据时得显示
 			const self=this;
 			const $input=(()=>{			//选择接受点击事件得元素
 				if(!this.o.search){
-					return this.child.select.find(".inputDisabled")
+					return this.node.select.find(".inputDisabled")
 				}else{
-					return this.child.input
+					return this.node.input
 				}
 			})();
 			$input.on("click",e=>{				//显示下拉菜单
 				const ev=window.event|| e
 				const flag=this.renderList(this.o.value)
 				if(!flag){		//没有数据
-					node.lists.html(`<li data-disabled="true">${this.o.noData}</li>`)
+					self.node.lists.html(`<li data-disabled="true">${this.o.noData}</li>`)
 				}
 				this.setPosition()
-				node.mask.show()
-				node.drop.show();
+				this.node.mask.show()
+				this.node.drop.show();
 				this.gotoActive()
 				this.data.show=true;			
 				this.data.tabIndex=this.data.nowNode.id<0?0:this.data.nowNode.id;		//tabindex默认是0
@@ -224,22 +224,22 @@ noData:没有数据时得显示
 		}
 		bindItem(){			//为列表绑定事件
 			const self=this;
-			node.lists.on("mouseenter","li",function(){		//鼠标滑过
+			this.node.lists.on("mouseenter","li",function(){		//鼠标滑过
 				$(this).addClass("active").siblings().removeClass("active")
 				self.data.tabIndex=$(this).data("id")
 			})
-			node.lists.on("click","li",function(e){			//点击具体得item
+			this.node.lists.on("click","li",function(e){			//点击具体得item
 				var ev=window.event|| e
 				const $that=$(this);		
 				if($that.data("disabled")) return false;		//当前不可点击
 				activeList($that,"active",self)
-				self.child.input.val(self.data.nowNode.text)
+				self.node.input.val(self.data.nowNode.text)
 				listHide(self)
 				ev.stopPropagation?ev.stopPropagation():ev.cancelBubble=true;
 			})
 		}
 		bindMask($input){   //为背景设置点击事件			
-			node.mask.on('click',()=>{			//点击其它地方隐藏下拉框
+			this.node.mask.on('click',()=>{			//点击其它地方隐藏下拉框
 				if(this.data.show){
 					if(this.data.nowNode.text !== ""){		//如果没有选择，则再关闭时回复输入框默认的值
 						$input.val(this.data.nowNode.text)
@@ -252,40 +252,40 @@ noData:没有数据时得显示
 		}
 		bindKeyDown($input){		//绑定键盘事件	
 			const self=this;	
-			this.child.select.on("keydown",e=>{			//上下键
+			this.node.select.on("keydown",e=>{			//上下键
 				const ev=window.event|| e;				
 				if(ev.keyCode==38){				//按↑键
 					if(this.data.tabIndex<=0) return false;
 					--this.data.tabIndex
-					const currentOffset=node.drop.offset().top,
-						  $next=node.items.eq(this.data.tabIndex),
+					const currentOffset=this.node.drop.offset().top,
+						  $next=this.node.items.eq(this.data.tabIndex),
 						  nextTop = $next.offset().top,
-						  nextOffset = node.drop.scrollTop() + (nextTop - currentOffset);
+						  nextOffset = this.node.drop.scrollTop() + (nextTop - currentOffset);
 					$next.addClass("active").siblings().removeClass("active")
 					if(nextTop - currentOffset < 0){
-						node.drop.scrollTop(nextOffset)
+						this.node.drop.scrollTop(nextOffset)
 					}
 					return false
 				}
 				if(ev.keyCode==40){		//按↓键
 					if(this.data.tabIndex>=this.data.searchLength-1) return false;
 					++this.data.tabIndex;
-					const $next=node.items.eq(this.data.tabIndex),
-						  currentOffset = node.drop.offset().top + node.drop.outerHeight(false),
+					const $next=this.node.items.eq(this.data.tabIndex),
+						  currentOffset = this.node.drop.offset().top + this.node.drop.outerHeight(false),
 						  nextBottom = $next.offset().top + $next.outerHeight(false),
-						  nextOffset = node.drop.scrollTop() + nextBottom - currentOffset;
+						  nextOffset = this.node.drop.scrollTop() + nextBottom - currentOffset;
 					$next.addClass("active").siblings().removeClass("active")
 					if(nextBottom > currentOffset){
-						node.drop.scrollTop(nextOffset)
+						this.node.drop.scrollTop(nextOffset)
 					}
 					return false
 				}			
 				if(ev.keyCode==13){		//回车
-					let nowNode=node.items.eq(self.data.tabIndex);
+					let nowNode=self.node.items.eq(self.data.tabIndex);
 					if(nowNode.data("disabled")) return false;		//当前不可点击
 					listHide(self)	
 					activeList(nowNode,"active",self)
-					this.child.input.val(self.data.nowNode.text)
+					self.node.input.val(self.data.nowNode.text)
 					const back=self.getValue();
 					self.o.callback && self.o.callback(back.data,back.value)
 					$input.blur()
@@ -294,15 +294,15 @@ noData:没有数据时得显示
 		}
 		search(){			//搜索
 			const self=this;
-			this.child.input.on("input propertychange",function(){
+			this.node.input.on("input propertychange",function(){
 				if(self.data.listLength<=0){ //没有数据还搜索
-					node.lists.html(`<li data-disabled="true">${this.o.noData}</li>`)
+					self.node.lists.html(`<li data-disabled="true">${this.o.noData}</li>`)
 					return false
 				}
 				const val=$.trim(this.value);
 				const flag=self.renderList(val,true)
 				if(!flag){		//没有搜索到匹配的
-					node.lists.html(`<li data-disabled="true">未找到“${val}”</li>`)					
+					self.node.lists.html(`<li data-disabled="true">未找到“${val}”</li>`)					
 					return false
 				}else{
 					if(val===""){		//如果输入框是空
@@ -310,7 +310,7 @@ noData:没有数据时得显示
 						self.gotoActive()
 					}else{				//匹配到输入的内容，并让第一个item获得焦点
 						self.data.tabIndex=0
-						node.items.eq(0).addClass("active").siblings().removeClass("active")
+						self.node.items.eq(0).addClass("active").siblings().removeClass("active")
 					}				
 				}
 			})
