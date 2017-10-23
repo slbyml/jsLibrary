@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="renderer" content="webkit">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<title>Document</title>
+   <link href="css/index.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="app">
+  <ul>
+    <li>
+      <h5>公告公告公告公告</h5>
+      <p>尊敬的客户：非常感谢您长期以来对我司您长期以来对我司您长期以来对我司</p>
+    </li>
+    <li>
+      <h5>风控风控风控风</h5>
+      <p>尊敬的客户：非常感谢您长期以来对我司您长期以来对我司您长期以来对我司</p>
+    </li>
+    <li>
+      <h5>公告公告公告公告222</h5>
+      <p>尊敬的客户：非常感谢您长期以来对我司您长期以来对我司您长期以来对我司</p>
+    </li>
+    <li>
+      <h5>风控风控风控2222</h5>
+      <p>尊敬的客户：非常感谢您长期以来对我司您长期以来对我司您长期以来对我司</p>
+    </li>
+    <li>
+      <h5>公告公告公告公告333</h5>
+      <p>尊敬的客户：非常感谢您长期以来对我司您长期以来对我司您长期以来对我司</p>
+    </li>
+    <li>
+      <h5>风控风控风控333</h5>
+      <p>尊敬的客户：非常感谢您长期以来对我司您长期以来对我司您长期以来对我司</p>
+    </li>
+  </ul>
+</div>
+</body>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/zepto/1.1.4/zepto.min.js"></script>
+<script type="text/javascript" src="./dist/js/PullToRefresh.min.js"></script>
+<script>
+var n=0,flag=true;
+function appendTestData(){
+  return "<li><h5>"+new Date().getMilliseconds()+"</h5><p>现在开始报时1："+new Date()+"</p></li><li><h5>"+new Date().getMilliseconds()+"</h5><p>现在开始报时2："+new Date()+"</p></li>"
+}
+function addhtml(type){
+  $("#app ul")[type](appendTestData())
+}
+var refreshBox=new PullToRefresh({
+  container:"#app",  
+  pull:{
+      callback:function(){
+        setTimeout(function(){             
+          n=0     
+          addhtml("html")
+          refreshBox.endPullRefresh(true)
+        },1000)
+      }
+  },
+  up:{
+      callback:function(){
+        setTimeout(function(){   
+          if(n<5){
+            n++
+           addhtml("append")
+           refreshBox.endUpLoading(true)    
+          }else{    //没有数据
+            refreshBox.endUpLoading(false)
+          }
+        },1000)
+      }
+  }
+})
+</script>
+</html>
