@@ -35,11 +35,14 @@ var initBankName=function(container){
 var s=initBankName("#selectBox")
 s.setData(bank1)
 
+
 var sa=initBankName("#selectBox2")
-sa.setData([])
+sa.setData(bank1)
 /*设置默认值*/
-setTimeout(function(){
+//setTimeout(function(){
   sa.setDefaultVal("中国建设银行股份有限公司永定支行")
-},2000)
+  console.log(sa.getValue())
+  
+//},2000)
 </script>
 </html>

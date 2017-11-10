@@ -42,10 +42,11 @@
 <script>
 var n=0,flag=true;
 function appendTestData(){
-  return "<li><h5>"+new Date().getMilliseconds()+"</h5><p>现在开始报时1："+new Date()+"</p></li><li><h5>"+new Date().getMilliseconds()+"</h5><p>现在开始报时2："+new Date()+"</p></li>"
+  return "<li><h5>"+Math.floor(Math.random()*1000)+"</h5><p>现在开始报时："+new Date()+"</p></li>"
 }
 function addhtml(type){
-  $("#app ul")[type](appendTestData())
+  console.log("第"+n+"次加载成功")
+  $("#app ul")[type](appendTestData()+appendTestData()+appendTestData()+appendTestData())
 }
 var refreshBox=new PullToRefresh({
   container:"#app",  

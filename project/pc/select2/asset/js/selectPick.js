@@ -9,6 +9,19 @@ placeholder:提示
 value:输入框初始值
 noData:没有数据时得显示
 */
+/* 例：
+var bank=new selectPick({
+        container:container,
+        placeholder:"请选择支行名称",
+        noData:"没有数据啊啊啊",
+        search:true,
+        key:"bankBranchName"
+    })
+    bank.init()
+    bank.setData([])  //设置数据
+    bank.getValue()  获取数据
+    bank.setDefaultVal("13")  设置默认值
+*/
 ;(function($, w, document,undefined){
 	//页面大小改变时时更改下拉框得大小和为止
 	const resizeWindow=(self)=>{			
