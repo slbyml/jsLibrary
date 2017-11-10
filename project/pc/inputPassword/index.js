@@ -20,7 +20,7 @@
         	if(!this.options.width){
         		this.options.width=parseFloat(this.$ele.css('height'))
         	};
-        	this.$ele.hide();
+        	this.$ele.css({"opacity":0,"height":0,"float":"left"});
         	this.FillHTML();
         	this.event();
             return this;
@@ -32,22 +32,23 @@
 			for(var i=0;i<this.options.length;i++){
 				html+="<span style='width:"+(w-1)+"px;height:"+w+"px'></span>"
 			};
-			html+="<input type='password'  style='width:"+w+"px;height:"+w+"px'></div>"
-			$p.append(html);
-			this.inputBox=$p.find('.validateInput');
-			this.input=this.inputBox.find('input');
-			this.item=$p.find('span')
+            html+="<input type='password' class='inputbox' style='width:"+w+"px;height:"+w+"px' autocomplete='off'></div>"
+            $p.append(html);
+            this.inputBox=$p.find('.validateInput');
+            this.input=this.inputBox.find('input');
+            this.item=$p.find('span')
         },
         event:function(){
-        	var that=this,isRunning=[],flag=true,keyDownFlag=true;//flag判断是否输入正确,keyDownFlag:当前是否有按下还没弹起得键
+            var that=this,isRunning=[],flag=true,keyDownFlag=true;//flag判断是否输入正确,keyDownFlag:当前是否有按下还没弹起得键
             var keyDN=0;        //如果有按下得数字且没有弹起，则不允许退格键
-        	that.inputBox.click(function(){
-        		var v=that.input.val()
-        		that.input.show().focus().val("").val(v);
-        	});
-        	that.input.blur(function(){
-        		that.input.hide()
-        	});
+            that.inputBox.click(function(){
+                var v=that.input.val()
+                that.input.addClass("focus").focus().val("").val(v);
+            });
+            that.input.blur(function(){
+                //that.input.hide()
+                that.input.removeClass("focus")
+            });
             function keyDownFn(e,c){
                 var ev=e,code=c;      
                 if(keyDN && code===8){  
