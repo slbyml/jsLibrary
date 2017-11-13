@@ -169,6 +169,13 @@ var bank=new selectPick({
 		setDefaultVal(val=""){		//设置默认值，为异步设置默认值用得
 			this.o.value=val
 			this.child.input.val(val)
+			if(val===""){			//默认值设为空		
+				this.data.nowNode={
+					id:-1,
+					text:""
+				};
+				return false
+			}
 			let item="";
 			for(let i=0,l=this.o.data.length;i<l;i++){
 				item=this.o.key?this.o.data[i][this.o.key]:this.o.data[i];
@@ -308,11 +315,11 @@ var bank=new selectPick({
 		search(){			//搜索
 			const self=this;
 			this.child.input.on("input propertychange",function(){
+				const val=$.trim(this.value);
 				if(self.data.listLength<=0){ //没有数据还搜索
-					node.lists.html(`<li data-disabled="true">${this.o.noData}</li>`)
+					node.lists.html(`<li data-disabled="true">${val===""?`${self.o.noData}`:`未找到“${val}”`}</li>`)
 					return false
 				}
-				const val=$.trim(this.value);
 				const flag=self.renderList(val,true)
 				if(!flag){		//没有搜索到匹配的
 					node.lists.html(`<li data-disabled="true">未找到“${val}”</li>`)					
