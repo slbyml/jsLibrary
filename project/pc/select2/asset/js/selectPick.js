@@ -119,8 +119,8 @@ var bank=new selectPick({
 			if(this.data.listLength<=0 || this.o.data[0]==="") return false;			//没有数据
 			for(let i=0;i<this.data.listLength;i++){
 				item=this.o.key?this.o.data[i][this.o.key]:this.o.data[i]
-				if(this.o.search && item.indexOf(text)<0 && text != "" && searchFlag) continue;		//如果有模糊搜索并且没有匹配到则退出当前循环
-				if(text != "" && this.data.nowNode.id<0){	//如果有初始值,则默认选中初始值	
+				if(this.o.search && searchFlag && text != "" && item.indexOf(text)<0 ) continue;		//如果有模糊搜索并且没有匹配到则退出当前循环
+				if(text != ""){	//如果有初始值,则默认选中初始值	
 					if(item===text){
 						html+=`<li data-id="${i}" class="active">${item}</li>`;
 						this.data.nowNode={
@@ -255,6 +255,10 @@ var bank=new selectPick({
 				activeList($that,"active",self)
 				self.child.input.val(self.data.nowNode.text)
 				listHide(self)
+				if(self.o.callback){
+					const back=self.getValue();
+					self.o.callback(back.data,back.value)
+				}
 				ev.stopPropagation?ev.stopPropagation():ev.cancelBubble=true;
 			})
 		}
@@ -262,6 +266,11 @@ var bank=new selectPick({
 			node.mask.on('click',()=>{			//点击其它地方隐藏下拉框
 				if(this.data.show){
 					if(this.data.nowNode.text !== ""){		//如果没有选择，则再关闭时回复输入框默认的值
+						const val=$input.val()
+						if(val !== "" && this.o.callback && this.o.search){	//数据改变时触发回掉							
+								const back=this.getValue();
+								this.o.callback(back.data,back.value)
+						}
 						$input.val(this.data.nowNode.text)
 					}else{
 						$input.val(this.o.value)
@@ -305,9 +314,11 @@ var bank=new selectPick({
 					if(nowNode.data("disabled")) return false;		//当前不可点击
 					listHide(self)	
 					activeList(nowNode,"active",self)
-					this.child.input.val(self.data.nowNode.text)
-					const back=self.getValue();
-					self.o.callback && self.o.callback(back.data,back.value)
+					this.child.input.val(self.data.nowNode.text)					
+					if(self.o.callback){
+						const back=self.getValue();
+						self.o.callback(back.data,back.value)
+					}
 					$input.blur()
 				}
 			})
