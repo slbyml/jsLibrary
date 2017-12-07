@@ -66,13 +66,14 @@ const transitionDuration = until.prefixStyle('transitionDuration');
 container:容器
 pull.set:是否启用上拉（下拉）；
 pull.height:下拉height，触发刷新
-pull.callback:满足下拉或上拉条件时触发
+pull.callback(this):满足下拉或上拉条件时触发
 pull.dampRate:阻尼
 */
 /*方法  参数为true说明还可以继续操作，为false时说明已经没有数据了
 .endUpLoading(flag)  //上拉加载完成后调用
 .endPullRefresh(flag)  //下拉刷新 完成后调用
 */
+/*默认参数 ↓↓↓↓↓↓↓↓*/
 const defaults = {
     container:"body",
     pull:{
@@ -167,7 +168,7 @@ class PullToRefresh{
               scrollHeight=this.dom.scrollHeight;
         if(scrollTop+this.domHeight+this.options.up.height>=scrollHeight || flag){
             this.data.upLoading=true
-            this.options.up.callback && this.options.up.callback()
+            this.options.up.callback && this.options.up.callback(this)
         }
     }
     endUpLoading(flag=true){        //更新上拉状态,flag判断是否还有更多
@@ -292,7 +293,7 @@ class PullToRefresh{
         this.translate(this.options.pull.height,300)
         this.data.pullHeight=this.options.pull.height
         this.progressTxt.innerText=this.options.pull.contentfresh
-        this.options.pull.callback && this.options.pull.callback()
+        this.options.pull.callback && this.options.pull.callback(this)
         this.progress.classList.add("rotate")
     }
     translate(h=0,duration=0){
