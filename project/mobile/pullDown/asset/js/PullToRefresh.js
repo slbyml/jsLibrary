@@ -220,6 +220,7 @@ class PullToRefresh{
     pullEvent(){            //为下拉刷新绑定事件
         if(!this.options.pull.set) return false;
         const start = e => {
+            this.data.canRefresh=false
             const scrollTop=this.dom.scrollTop;
             this.data.canPull=scrollTop>0?false:true       //根据滚动到顶部判断是否可以启用下拉
             this.data.preY=this.data.starY = e.changedTouches[0].clientY || e.clientY
@@ -270,6 +271,7 @@ class PullToRefresh{
             this.starY=0;
             this.starX=0;
             if(this.data.canRefresh){       //刷新
+                console.log('---------------')
                 this.pullRefresh()
             }else{      //不刷新
                 this.pullBox.style.visibility="hidden"; //隐藏下拉刷新
