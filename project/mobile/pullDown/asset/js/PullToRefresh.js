@@ -166,7 +166,7 @@ class PullToRefresh{
         if(this.data.upLoading) return false;
         const scrollTop=this.dom.scrollTop,
               scrollHeight=this.dom.scrollHeight;
-        if(scrollTop+this.domHeight+this.options.up.height>=scrollHeight || flag){
+        if(flag || scrollTop+this.domHeight+this.options.up.height>=scrollHeight){
             this.data.upLoading=true
             this.options.up.callback && this.options.up.callback(this)
         }
@@ -271,7 +271,6 @@ class PullToRefresh{
             this.starY=0;
             this.starX=0;
             if(this.data.canRefresh){       //刷新
-                console.log('---------------')
                 this.pullRefresh()
             }else{      //不刷新
                 this.pullBox.style.visibility="hidden"; //隐藏下拉刷新
