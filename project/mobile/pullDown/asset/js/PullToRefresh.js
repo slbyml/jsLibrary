@@ -1,4 +1,4 @@
-const until=Object.assign(until || {},{
+let _PTFuntil={
     throttle(that, fn, delay, atleast){         //函数节流
         let timer = null;
         let previous = null;
@@ -25,7 +25,7 @@ const until=Object.assign(until || {},{
             for(key in obj2) {
                 // 如果target(也就是obj1[key])存在，且是对象的话再去调用deepMerge，否则就是obj1[key]里面没这个对象，需要与obj2[key]合并
                 obj1[key] = obj1[key] && obj1[key].toString() === "[object Object]" ?
-                until.deepMerge(obj1[key], obj2[key]) : obj1[key] = obj2[key];
+                _PTFuntil.deepMerge(obj1[key], obj2[key]) : obj1[key] = obj2[key];
             }
         }
         return function(...arr){
@@ -57,10 +57,10 @@ const until=Object.assign(until || {},{
 
         }
     })()
-})
+}
 
-const transform = until.prefixStyle('transform');
-const transitionDuration = until.prefixStyle('transitionDuration');
+const transform = _PTFuntil.prefixStyle('transform');
+const transitionDuration = _PTFuntil.prefixStyle('transitionDuration');
 
 /*
 container:容器
@@ -96,7 +96,7 @@ const defaults = {
 /*下拉刷新，上拉加载*/
 class PullToRefresh{
     constructor(options){
-        this.options=until.deepMerge({},until.deepMerge(defaults, options));
+        this.options=_PTFuntil.deepMerge({},_PTFuntil.deepMerge(defaults, options));
         if(!!!options.pull || !this.options.pull.set){      //如果没有设置pull，则默认不启用下拉刷新
             this.options.pull.set=false;
         }
@@ -160,7 +160,7 @@ class PullToRefresh{
     }
     loadMoreEvent(){//上拉加载
         const box=this.dom;
-        this.dom.onscroll=until.throttle(this, this.loadMore, 200, 250)
+        this.dom.onscroll=_PTFuntil.throttle(this, this.loadMore, 200, 250)
     }
     loadMore(flag=false){   //加载更多  flag为true是可以跳过判断，直接加载更多
         if(this.data.upLoading) return false;
@@ -267,9 +267,9 @@ class PullToRefresh{
                 }
                 return false
             }
-            this.preY=0;
-            this.starY=0;
-            this.starX=0;
+            this.data.preY=0;
+            this.data.starY=0;
+            this.data.starX=0;
             if(this.data.canRefresh){       //刷新
                 this.pullRefresh()
             }else{      //不刷新
