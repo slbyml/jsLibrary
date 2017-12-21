@@ -72,6 +72,7 @@ pull.dampRate:阻尼
 /*方法  参数为true说明还可以继续操作，为false时说明已经没有数据了
 .endUpLoading(flag)  //上拉加载完成后调用
 .endPullRefresh(flag)  //下拉刷新 完成后调用
+.initUpLoading()  //当不是由下拉或上拉改变得容器里面所有内容时，一定要先重置下拉状态，否则会有bug
 */
 /*默认参数 ↓↓↓↓↓↓↓↓*/
 const defaults = {
@@ -159,8 +160,11 @@ class PullToRefresh{
         this.dom.appendChild(this.upBox)
     }
     loadMoreEvent(){//上拉加载
-        const box=this.dom;
-        this.dom.onscroll=_PTFuntil.throttle(this, this.loadMore, 200, 250)
+        this.dom.onscroll=_PTFuntil.throttle(this, this.scrollCallback, 200, 250)
+    }
+    scrollCallback(){
+        if(!this.data.firstFull) return false;    //  当不是由下拉或上拉改变得容器里面所有内容时,如果改变之前有滚动条，改变之后没有，则可能会触发一次scroll,会造成两次请求
+        this.loadMore()
     }
     loadMore(flag=false){   //加载更多  flag为true是可以跳过判断，直接加载更多
         if(this.data.upLoading) return false;
