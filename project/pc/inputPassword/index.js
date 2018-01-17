@@ -9,6 +9,9 @@
         this.defaults = {
             'length': 6,
             'width':0,
+            autofocus:false,
+            focusback:null,
+            callback:null
         },
         this.options = $.extend(true, this.defaults, opt||{});
         this.inputVal="";
@@ -17,21 +20,22 @@
     validate.prototype = {
         constructor:validate,
         init: function() {
-        	if(!this.options.width){
-        		this.options.width=parseFloat(this.$ele.css('height'))
-        	};
-        	this.$ele.css({"opacity":0,"height":0,"float":"left"});
-        	this.FillHTML();
-        	this.event();
+            if(!this.options.width){
+                this.options.width=parseFloat(this.$ele.css('height'))
+            };
+            this.$ele.css({"opacity":0,"height":0,"float":"left"});
+            this.FillHTML();
+            this.event();
+            this.canUse=true
             return this;
         },
         FillHTML:function(){
-        	var w=this.options.width;
-        	var $p=this.$ele.parent();
-        	var html="<div class='validateInput'>";
-			for(var i=0;i<this.options.length;i++){
-				html+="<span style='width:"+(w-1)+"px;height:"+w+"px'></span>"
-			};
+            var w=this.options.width;
+            var $p=this.$ele.parent();
+            var html="<div class='validateInput'>";
+            for(var i=0;i<this.options.length;i++){
+                html+="<span style='width:"+(w-1)+"px;height:"+w+"px'></span>"
+            };
             html+="<input type='password' class='inputbox' style='width:"+w+"px;height:"+w+"px' autocomplete='off'></div>"
             $p.append(html);
             this.inputBox=$p.find('.validateInput');
@@ -41,13 +45,19 @@
         event:function(){
             var that=this,isRunning=[],flag=true,keyDownFlag=true;//flag判断是否输入正确,keyDownFlag:当前是否有按下还没弹起得键
             var keyDN=0;        //如果有按下得数字且没有弹起，则不允许退格键
-            that.inputBox.click(function(){
+            function inputFocus(){
                 var v=that.input.val()
-                that.input.addClass("focus").focus().val("").val(v);
+                that.options.focusback && that.options.focusback(that)
+                that.input.addClass("focus").focus().val("").val(v);            
+            }
+            that.inputBox.click(function(){
+                if(!that.canUse) return false;
+                inputFocus()
             });
             that.input.blur(function(){
                 //that.input.hide()
                 that.input.removeClass("focus")
+                that.options.callback && that.options.callback(that.inputVal,that)
             });
             function keyDownFn(e,c){
                 var ev=e,code=c;      
@@ -78,7 +88,7 @@
                 isRunning[code] = false;
                 if(keyDN>0 && keyDownFlag){keyDN--; };                
                 if(!flag) return false;
-                var txt="";l=0;
+                var txt="",l=0;
                 if(code==8){
                     if(that.n===0) return false;
                     that.n--;
@@ -91,8 +101,9 @@
                 };
                 txt=$.trim(_input.value);
                 that.item.eq(that.n).addClass('active');
-                if(that.n>=that.options.length && code!=8){                    
+                if(that.n>=that.options.length && code!=8){                  
                     _input.value="1";
+                    that.input.blur()
                     return false
                 };
                 _input.value="";
@@ -101,23 +112,27 @@
                 that.n++;
                 if(that.n>=that.options.length){
                     _input.value="1"
+                    that.input.blur()
                      return false
                 };
                 that.input.css('left',that.n*that.options.width)
 
             }
-        	that.input.keydown(function(ev){  		
-        		var ev=ev||window.event;
-        		var code=ev.keyCode; 
+            that.input.keydown(function(ev){        
+                var ev=ev||window.event;
+                var code=ev.keyCode; 
                var f=keyDownFn(ev,code);
                if(!f) return false;
-        	});
-        	that.input.keyup(function(ev){
-        		var ev=ev||window.event;
-        		var code=ev.keyCode;
+            });
+            that.input.keyup(function(ev){
+                var ev=ev||window.event;
+                var code=ev.keyCode;
                 var t=this;
                 keyUpFn(ev,code,t)
-        	})
+            })        
+            if(this.options.autofocus){
+                inputFocus()
+            }
         },
         empty:function(flag){
             this.item.removeClass("active");
@@ -129,6 +144,10 @@
             if(flag){
                 this.input.show().focus()
             }
+        },
+        disabled:function(flag){
+            flag=flag || true;
+            this.canUse=!flag
         }
     }
     $.fn.validateInput = function(options) {

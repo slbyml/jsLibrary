@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<title>Document</title>
+   <link href="css/normalize.css" rel="stylesheet" type="text/css" />
+   <link href="css/index.css" rel="stylesheet" type="text/css" />
+   <style>
+   *{box-sizing: border-box;}
+    #time{height:40px;line-height:40px;width: 100%}
+   </style>
+</head>
+<body>
+<p>点击输入框弹出日期选择：</p>
+<input type="text" readonly value="2018-01-10" id="time">
+</body>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/zepto/1.1.4/zepto.min.js"></script>
+<script type="text/javascript" src="css/AlloyTouch.js"></script>
+<script type="text/javascript" src="dist/js/picker.min.js"></script>
+<script>
+$(function(){
+  $('#time').dataPicker({
+    callback:function(d){
+      console.log(d)
+    }
+  });  
+})
+
+</script>
+</html>
