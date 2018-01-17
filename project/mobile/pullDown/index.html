@@ -6,8 +6,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 	<title>Document</title>
    <link href="css/index.css" rel="stylesheet" type="text/css" />
+   <style>
+    .tip{position: fixed;right:10px;top: 50px;width:60px;height: 50px;border-radius: 50%;background-color: #fff;box-shadow:0 0 5px #ccc;z-index: 10000;text-align: center;line-height: 50px;color: #666}
+   </style>
 </head>
 <body>
+<div class="tip">第0次</div>
 <div id="app">
   <ul>
     <li>
@@ -46,6 +50,7 @@ function appendTestData(){
 }
 function addhtml(type){
   console.log("第"+n+"次加载成功")
+  $(".tip").html("第"+n+"次")
   $("#app ul")[type](appendTestData()+appendTestData()+appendTestData()+appendTestData())
 }
 var refreshBox=new PullToRefresh({
