@@ -45,8 +45,8 @@ var bank=new selectPick({
 		node.lists.off("click mouseenter")		
 		node.mask.off("click")
 
-		$(window).off("resize",resizeWindow(self))	
-		$(window).off("scroll",self.setPosition())
+		$(window).off(".resizeSelect",resizeWindow(self))	
+		$(window).off(".scrollSelect",self.setPosition())
 	}
 	/*默认值*/
 	const defaults={
@@ -236,8 +236,8 @@ var bank=new selectPick({
 				this.bindMask($input)
 				this.bindItem()
 
-				$(window).on("resize",resizeWindow(this))
-				$(window).on("scroll",this.setPosition.bind(this))
+				$(window).on("resize.resizeSelect",resizeWindow(this))
+				$(window).on("scroll.scrollSelect",this.setPosition.bind(this))
 				ev.stopPropagation?ev.stopPropagation():ev.cancelBubble=true;
 			})
 			this.bindKeyDown($input)

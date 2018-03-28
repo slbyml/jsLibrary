@@ -1,0 +1,40 @@
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<title>Document</title>
+	<style>
+		*{padding: 0;margin: 0}
+		.head{height: 400px;}
+		.scrollNav{height: 40px;overflow: hidden;}
+		.nav{width: 100%;display: flex;height: 40px;line-height: 40px;background-color: #fff;}
+		.nav span{flex:1;text-align: center;border-bottom:1px solid transparent;}
+		.nav .active{border-bottom-color: red;color: red}
+		.fixed .nav{position: fixed;left: 0;top: 0;width: 100%}
+		.box{height:900px;color: #fff;line-height: 80px;}
+		#fat{background-color: #333}
+		#mdo{background-color: #666}
+		#sta{background-color: #999}
+	</style>
+</head>
+<body>
+<div class="head"></div>
+<div class="scrollNav">
+	<div class="nav">
+		<span data-target="#fat" class="list active">导航111</span>
+		<span data-target="#mdo" class="list">导航222</span>
+		<span data-target="#sta" class="list">导航333</span>
+	</div>
+</div>
+<div id="fat" class="box">1111111111<br>1111111111<br>1111111111<br>1111111111</div>
+<div id="mdo" class="box">222222222<br>222222222<br>222222222<br></div>
+<div id="sta" class="box">3333333333333<br>3333333333333<br>3333333333333</div>
+<script src="http://apps.bdimg.com/libs/zepto/1.1.4/zepto.min.js" type="text/javascript"></script>
+<script src="index.js" type="text/javascript"></script>
+</body>
+</html>
+
