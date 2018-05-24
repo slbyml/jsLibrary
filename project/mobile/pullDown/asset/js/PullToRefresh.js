@@ -232,7 +232,7 @@ class PullToRefresh{
         }   
         const move = e =>{
             const scrollTop=this.dom.scrollTop;
-            //if(this.data.pullLoadding || !this.data.canPull) return false;      //当前不是下拉状态活不是正在刷新状态
+            if(this.data.pullLoadding || !this.data.canPull) return false;      //当前不是下拉状态活不是正在刷新状态
             this.pullBox.style.visibility="visible"; //隐藏下拉刷新
             const toucheX=e.changedTouches[0].clientX || e.clientX,
                   toucheY=e.changedTouches[0].clientY || e.clientY;

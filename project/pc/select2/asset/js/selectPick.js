@@ -98,7 +98,7 @@ var bank=new selectPick({
 			//公共列表
 			const drop=document.getElementById("selectDrop");
 			if(!drop){		
-				node.drop=$(`<div id="selectDrop" style="max-height:${this.o.listLength*this.o.listHeight}px"><ul></ul></div>`)
+				node.drop=$(`<div id="selectDrop" style="display:none;max-height:${this.o.listLength*this.o.listHeight}px"><ul></ul></div>`)
 				$("body").append(node.drop)
 			}else{
 				node.drop=$(drop)
