@@ -119,28 +119,28 @@ class PullToRefresh{
             pullHeight:0,       //存放下拉的高度
             canRefresh:false,  //能否刷新
         }  
-        this.init()
+        this._init()
     }
-    init(){     
+    _init(){     
         this.dom.classList.add("refreshWrap")
 
-        this.createPullBox();
-        this.createUpbox();
+        this._createPullBox();
+        this._createUpbox();
         
-        this.firstLoad()
-        this.loadMoreEvent();
+        this._firstLoad()
+        this._loadMoreEvent();
 
-        this.pullEvent()
+        this._pullEvent()
     }
-    firstLoad(){  //初始化组件时，要判断是否需要加载内容来让内容大于滚动容器的高度
+    _firstLoad(){  //初始化组件时，要判断是否需要加载内容来让内容大于滚动容器的高度
         const childHeight=this.scrollBox.offsetHeight;
         if(childHeight<this.domHeight+this.options.up.height && !this.data.firstFull){      //滚动元素小于滚动容器
-            this.loadMore(true)
+            this._loadMore(true)
         }else{
             this.data.firstFull=true;
         }
     }
-    createPullBox(){    //创建下拉
+    _createPullBox(){    //创建下拉
         if(!this.options.pull.set) return false;
         this.pullBox=document.createElement("DIV");
         this.pullBox.className="refresh";
@@ -150,7 +150,7 @@ class PullToRefresh{
         this.progress=this.pullBox.querySelector(".loading")
         this.progressTxt=this.pullBox.querySelector(".loadTxt")
     }
-    createUpbox(){      //创建上拉加载
+    _createUpbox(){      //创建上拉加载
         if(!this.options.up.set) return false;
         const scrollBoxColor=getComputedStyle(this.scrollBox).backgroundColor;
         this.upBox=document.createElement("DIV")
@@ -159,14 +159,14 @@ class PullToRefresh{
         this.upBox.innerHTML=`<i class="loading rotate"></i><p class="loadTxt">${this.options.up.contentfresh}</p>`
         this.dom.appendChild(this.upBox)
     }
-    loadMoreEvent(){//上拉加载
-        this.dom.onscroll=_PTFuntil.throttle(this, this.scrollCallback, 200, 250)
+    _loadMoreEvent(){//上拉加载
+        this.dom.onscroll=_PTFuntil.throttle(this, this._scrollCallback, 200, 250)
     }
-    scrollCallback(){
+    _scrollCallback(){
         if(!this.data.firstFull) return false;    //  当不是由下拉或上拉改变得容器里面所有内容时,如果改变之前有滚动条，改变之后没有，则可能会触发一次scroll,会造成两次请求
-        this.loadMore()
+        this._loadMore()
     }
-    loadMore(flag=false){   //加载更多  flag为true是可以跳过判断，直接加载更多
+    _loadMore(flag=false){   //加载更多  flag为true是可以跳过判断，直接加载更多
         if(this.data.upLoading) return false;
         const scrollTop=this.dom.scrollTop,
               scrollHeight=this.dom.scrollHeight;
@@ -178,15 +178,15 @@ class PullToRefresh{
     endUpLoading(flag=true){        //更新上拉状态,flag判断是否还有更多
         if(flag){
             this.data.upLoading=false;
-            if(!this.data.firstFull) this.firstLoad();          
+            if(!this.data.firstFull) this._firstLoad();          
         }else{      //没有数据
-            this.UpNoMore()
+            this._UpNoMore()
         }
     }
     endPullRefresh(flag=true){       //刷新成功（外部调用）
-        this.showPullSuc(flag)
+        this._showPullSuc(flag)
     }
-    showPullSuc(flag){
+    _showPullSuc(flag){
         //显示刷新成功并更改图标
         this.progress.classList.add("success")
         this.progress.style[transform] = `rotate(45deg)`
@@ -195,33 +195,36 @@ class PullToRefresh{
         this.progress.classList.remove("rotate")
 
         setTimeout(()=>{
-            this.refreshSuccess(flag)
+            this._refreshSuccess(flag)
         },1000)
     }
-    refreshSuccess(flag){      //刷新成功，重置参数
+    _refreshSuccess(flag){      //刷新成功，重置参数
         this.data.pullLoadding=false;
-        this.translate(0,300)
+        this._translate(0,300)
         this.data.pullHeight=0
         this.dom.scrollTop=0
-        setTimeout(()=>{this.progress.classList.remove("success")},100)     //移除刷新成功的√
+        setTimeout(()=>{
+            this.progressTxt.innerText=this.options.pull.contentdown
+            this.progress.classList.remove("success")
+        },100)     //移除刷新成功的√
         
         if(!flag){      //刷新时没有数据
             this.pullBox.style.visibility="hidden" //隐藏下拉刷新
-            this.UpNoMore();
+            this._UpNoMore();
             return false;
         }
         /*重置上拉加载的参数*/
         this.initUpLoading()
         setTimeout(()=>{     
-            this.firstLoad();   //下一次渲染的时候判断是否需要加载更多
+            this._firstLoad();   //下一次渲染的时候判断是否需要加载更多
             this.pullBox.style.visibility="hidden" //隐藏下拉刷新
         },100)
     }
-    UpNoMore(){
+    _UpNoMore(){
         this.upBox.classList.add("noMore")
         this.upBox.querySelector(".loadTxt").innerHTML=this.options.up.contentnomore
     }
-    pullEvent(){            //为下拉刷新绑定事件
+    _pullEvent(){            //为下拉刷新绑定事件
         if(!this.options.pull.set) return false;
         const start = e => {
             this.data.canRefresh=false
@@ -248,7 +251,7 @@ class PullToRefresh{
                 return false 
             }   
             e.preventDefault();
-            if(this.options.pullHeight<this.options.pull.height){       //没有到达可以刷新的距离
+            if(this.data.pullHeight<this.options.pull.height){       //没有到达可以刷新的距离
                 this.data.pullHeight+=diff
             }else{                  //到达可以刷新的高度
                 if(diff<0){     
@@ -258,8 +261,8 @@ class PullToRefresh{
                 }               
             }
             this.data.pullHeight=Math.round(this.data.pullHeight)
-            this.translate(this.data.pullHeight)
-            this.progressRote(this.data.pullHeight)
+            this._translate(this.data.pullHeight)
+            this._progressRote(this.data.pullHeight)
         }   
         const end = e =>{
             //const scrollTop=this.dom.scrollTop;
@@ -267,7 +270,7 @@ class PullToRefresh{
             if(!this.data.canPull){       //当前不是下拉状态
                 if(this.data.pullHeight!=0){
                     this.data.pullHeight=0;
-                    this.translate(0,0)
+                    this._translate(0,0)
                 }
                 return false
             }
@@ -275,11 +278,11 @@ class PullToRefresh{
             this.data.starY=0;
             this.data.starX=0;
             if(this.data.canRefresh){       //刷新
-                this.pullRefresh()
+                this._pullRefresh()
             }else{      //不刷新
                 this.pullBox.style.visibility="hidden"; //隐藏下拉刷新
                 this.data.pullHeight=0;
-                this.translate(0,300)
+                this._translate(0,300)
                 this.dom.scrollTop=0
             }
         }
@@ -293,21 +296,21 @@ class PullToRefresh{
             end(e)
         }, false)
     }
-    pullRefresh(){          //刷新
+    _pullRefresh(){          //刷新
         this.data.pullLoadding=true
-        this.translate(this.options.pull.height,300)
+        this._translate(this.options.pull.height,300)
         this.data.pullHeight=this.options.pull.height
         this.progressTxt.innerText=this.options.pull.contentfresh
         this.options.pull.callback && this.options.pull.callback(this)
         this.progress.classList.add("rotate")
     }
-    translate(h=0,duration=0){
+    _translate(h=0,duration=0){
         this.upBox.style[transitionDuration] =`${duration}ms`
         this.upBox.style[transform] = `translate3d(0,${h}px,0)`
         this.scrollBox.style[transitionDuration] =`${duration}ms`
         this.scrollBox.style[transform] = `translate3d(0,${h}px,0)`
     }
-    progressRote(h=0){          //更改下拉刷新的文字和动画
+    _progressRote(h=0){          //更改下拉刷新的文字和动画
         const r=360;
         let rotate=r*h/this.options.pull.height
         this.progress.style[transform] = `rotate(${rotate}deg)`
@@ -331,17 +334,17 @@ class PullToRefresh{
         this.upBox.classList.remove("noMore")
         this.upBox.querySelector(".loadTxt").innerHTML=this.options.up.contentfresh
     }
-    scrollToTop(){
+    _scrollToTop(){
         this.dom.scrollTop=0
     }
     triggerPullLoading(){       //主动触发刷新
         if(!this.options.pull.set) return false;
         this.pullBox.style.visibility="visible"
-        this.scrollToTop()
-        this.pullRefresh()
+        this._scrollToTop()
+        this._pullRefresh()
     }
     triggerUpLoading(){         //主动触发上拉加载
         this.initUpLoading()
-        this.loadMore(true)
+        this._loadMore(true)
     }
 }
